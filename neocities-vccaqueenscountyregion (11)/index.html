@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCCA Queens County Region</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FFCC00">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General page layout and colors */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .bg-club-maroon { background-color: #800000; }
+        .text-chevy-gold { color: #FFCC00; }
+        .bg-chevy-gold { background-color: #FFCC00; }
+        .text-club-maroon { color: #800000; }
+        .bg-dark-gray { background-color: #2c2c2c; }
+        .font-lobster { font-family: 'Lobster', cursive; }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); }
+        .rounded-lg { border-radius: 0.5rem; }
+        .text-center { text-align: center; }
+        .text-white { color: white; }
+        .text-black { color: black; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-8 { margin-bottom: 2rem; }
+
+        /* Header and Navigation */
+        #header-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            flex-wrap: wrap;
+        }
+        nav a { text-decoration: none; }
+        nav .nav-logo { display: flex; align-items: center; }
+        nav .nav-logo img { height: 2.5rem; width: auto; border-radius: 9999px; }
+        nav .nav-logo span { font-size: 1.5rem; font-weight: 700; margin-left: 0.5rem; }
+        
+        #nav-menu {
+            display: none;
+            width: 100%;
+        }
+        #nav-menu.active {
+            display: block;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+        }
+        nav ul li { margin-top: 1rem; }
+        nav ul a {
+            display: block;
+            color: white;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+        nav ul a:hover { color: #FFCC00; }
+        nav ul a.active-link {
+            color: #FFCC00;
+            font-weight: bold;
+        }
+        #menu-button { display: block; border: none; background: transparent; cursor: pointer; }
+        #menu-button svg { width: 1.5rem; height: 1.5rem; fill: white; }
+
+        @media (min-width: 1024px) {
+            nav { flex-wrap: nowrap; }
+            #nav-menu {
+                display: flex !important;
+                width: auto;
+                margin-top: 0;
+            }
+            #menu-button { display: none; }
+            nav ul {
+                display: flex !important;
+            }
+            nav ul li {
+                margin-left: 2rem;
+                margin-top: 0;
+            }
+        }
+
+        /* Hero Section */
+        .parallax-bg {
+            background-image: url('https://placehold.co/1920x1080/800000/FFFFFF?text=Classic+Car');
+            min-height: 100vh;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (max-width: 1023px) {
+            .parallax-bg {
+                background-attachment: scroll;
+            }
+        }
+        .hero-content {
+            background-color: rgba(0,0,0,0.5);
+            padding: 2rem;
+            border-radius: 0.5rem;
+        }
+        .hero-content h1 { font-size: 3rem; font-weight: bold; }
+        .hero-content p { font-size: 1.25rem; margin-top: 1rem; }
+        .hero-content .button {
+            display: inline-block;
+            background-color: #FFCC00;
+            color: black;
+            font-weight: bold;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+        .hero-content .button:hover { transform: scale(1.1); }
+        
+        /* General Sections */
+        main { transition: padding-top 0.3s ease-in-out; } 
+        section h2 { font-size: 2.25rem; font-weight: bold; border-bottom: 2px solid #FFCC00; padding-bottom: 0.5rem; }
+        section h3 { font-size: 1.875rem; font-weight: bold; border-bottom: 2px solid #FFCC00; padding-bottom: 0.5rem; }
+        .card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        
+        @media (min-width: 640px) {
+            .sm-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 768px) {
+            .md-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md-grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (min-width: 1024px) {
+             .lg-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+
+        /* Icons and buttons */
+        .icon-text-link {
+            display: inline-flex;
+            align-items: center;
+            background-color: #800000;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, background-color 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 1rem;
+        }
+        .icon-text-link:hover {
+            transform: translateY(-2px);
+            background-color: #a00000;
+        }
+        .icon-text-link svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.5rem;
+            fill: white;
+        }
+
+        /* Message box and modal */
+        #message-box, #image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 50;
+            transition: opacity 0.3s ease-in-out;
+            align-items: center;
+            justify-content: center;
+        }
+        #message-box.show, #image-modal.show {
+            display: flex;
+        }
+        .message-box-inner {
+            background-color: #800000;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
+            text-align: center;
+            max-width: 90vw;
+        }
+        #close-modal-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 60;
+        }
+        #modal-image {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: 0.5rem;
+        }
+
+        /* Utilities */
+        .w-full { width: 100%; }
+        .h-48 { height: 12rem; }
+        .object-cover { object-fit: cover; }
+        .leading-relaxed { line-height: 1.625; }
+        .text-club-maroon { color: #800000; }
+        .font-bold { font-weight: bold; }
+        .underline { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header id="header-container">
+        <nav class="bg-club-maroon text-white shadow-lg">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; width: 100%;">
+                <a href="#" class="nav-logo" onclick="navigate('home'); return false;">
+                    <img src="club-logo.jpg" alt="VCCA Queens Club Logo" onerror="this.onerror=null;this.src='https://placehold.co/80x80/FFCC00/FFFFFF?text=Logo';"/>
+                    <span class="font-lobster text-chevy-gold">VCCA Queens</span>
+                </a>
+                <button id="menu-button" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
+                    </svg>
+                </button>
+                <div id="nav-menu" class="w-full mt-4">
+                    <ul>
+                        <li><a href="#home" onclick="navigate('home'); return false;">Home</a></li>
+                        <li><a href="#about" onclick="navigate('about'); return false;">About Us</a></li>
+                        <li><a href="#events" onclick="navigate('events'); return false;">Events</a></li>
+                        <li><a href="#gallery" onclick="navigate('gallery'); return false;">Gallery</a></li>
+                        <li><a href="#membership" onclick="navigate('membership'); return false;">Membership</a></li>
+                        <li><a href="#contact" onclick="navigate('contact'); return false;">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content"></main> 
+
+    <footer id="footer-container">
+        <div class="bg-dark-gray text-white py-8">
+            <div class="container text-center">
+                <p>© 2025 VCCA Queens County Region. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="message-box">
+        <div class="message-box-inner">
+            <h4 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem;" id="message-title"></h4>
+            <div id="message-content" style="text-align: left;"></div>
+            <button id="dismiss-message-button" style="margin-top: 1rem; background-color: #FFCC00; color: black; font-weight: bold; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; border: none;">
+                Dismiss
+            </button>
+        </div>
+    </div>
+    
+    <div id="image-modal">
+        <div style="position: relative;">
+             <button id="close-modal-button">×</button>
+             <img id="modal-image" src="" alt="Full-size gallery image">
+        </div>
+    </div>
+    
+    <script>
+        const websiteData = {
+            featuredCars: [
+                { id: 1, name: '1957 Chevrolet Bel Air', owner: 'John D.', image: 'bel-air.jpg' },
+                { id: 2, name: '1969 Chevrolet Camaro', owner: 'Jane C.', image: 'camaro.jpg' },
+                { id: 3, name: '1955 Chevrolet Nomad', owner: 'Mike B.', image: 'nomad.jpg' },
+                { id: 4, name: '1967 Chevrolet Impala', owner: 'Sarah M.', image: 'impala.jpg' },
+            ],
+            contactInfo: {
+                director: "Sebastian D'Agostino",
+                homePhone: "(718) 225-3438",
+                cellPhone: "(917) 837-5383",
+                website: "http://antiquechevyclubofqueens.org/",
+                facebook: "https://www.facebook.com/qcrvcca"
+            }
+        };
+
+        const pages = {
+            'home': `
+                <div class='parallax-bg'>
+                    <section class='min-h-screen flex items-center justify-center text-center text-white'>
+                        <div style='background-color: rgba(0,0,0,0.5); padding: 2rem; border-radius: 0.5rem;'>
+                            <h1 style='font-size: 3rem;' class='font-lobster text-chevy-gold'>VCCA Queens County Region</h1>
+                            <p style='font-size: 1.25rem;' class='mt-4'>The Voice of the Chevrolet Enthusiast</p>
+                            <a href='#about' class='button mt-8' onclick='navigate("about"); return false;'>Learn More</a>
+                        </div>
+                    </section>
+                </div>
+                <section class='container py-12'>
+                    <div class='card' style='background-color: #f3f4f6; text-align: center;'>
+                        <h3 style='font-size: 1.875rem; color: #800000; margin-bottom: 1rem;'>Download Our App</h3>
+                        <p style='font-size: 1.125rem; color: #374151; margin-bottom: 2rem; max-width: 42rem; margin-left: auto; margin-right: auto;'>
+                            Add our website to your home screen for an app-like experience!
+                        </p>
+                        <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;'>
+                            <button onclick="showMessage('Add to Home Screen (iPhone)', '1. Tap the <svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 512 512\\' style=\\'width: 1.25rem; height: 1.25rem; display: inline-block; vertical-align: middle;\\'><path fill=\\'currentColor\\' d=\\'M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-59.4 59.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 448a16 16 0 1 0 0-32 16 16 0 1 0 0 32z\\'/></svg> icon at the bottom of the screen. <br>2. Scroll down and tap \\'Add to Home Screen\\'. <br>3. Tap \\'Add\\' to finish.')" class='icon-text-link' style='background-color: black; color: white;'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'><path d='M310.9 98.4c17.5-25.2 31.8-39.7 32.1-40c2.7-2.7 6.2-4 9.6-4.2 3.4-.2 6.8 .4 9.5 2 7.1 4.1 11.2 12.3 10.1 20.3-.9 6.7-4.2 14.5-8.2 24.1-1.3 3.4-5.3 7.8-11.4 12.7-18.8 15.6-38.3 31.9-46.1 49.3-13.6 30.2-16.7 67-1.5 110.1 9.4 27 21.6 52.3 22.3 75.5 .5 17.5-12.7 33.1-27.4-43.8-10 7.3-21.7 11.2-34 11.2-12.3 0-24-3.9-34-11.2-14.7-10.7-28-26.3-27.4-43.8 .7-23.2 13-48.5 22.3-75.5 15.2-43.1 12.1-79.9-1.5-110.1-7.8-17.4-27.3-33.7-46.1-49.3-6.1-4.9-10.1-9.3-11.4-12.7-4-9.6-7.3-17.4-8.2-24.1-1.1-8 3-16.2 10.1-20.3 2.7-1.6 6.1-2.2 9.5-2 3.4 .2 6.9 1.5 9.6 4.2 .3 .3 14.6 14.8 32.1 40zM352 144c-22.6 9.6-47.5 16.2-73.4 19.3 20.2-16.6 29.8-37.4 33.1-49.8 .9-3.3 2.5-6.6 5-9.3s5.8-4.5 9.3-5c20.2-2.8 40.5-2.7 60.7 .3 2.9 .4 5.7 1.4 8.2 3.1 2.5 1.7 4.7 3.9 6.5 6.3 3.6 4.9 5.8 10.6 6.5 16.7s-1 12.3-4.5 17.2c-5.9 8.3-13.2 15.3-21.6 20.7-8.4 5.4-17.6 9.6-27.2 12.4z'/></svg>
+                                <span>Download App for iPhone</span>
+                            </button>
+                            <button onclick="showMessage('Add to Home Screen (Android)', '1. Tap the three-dot menu <svg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 128 512\\' style=\\'width: 0.5rem; height: 1.25rem; display: inline-block; vertical-align: middle;\\'><path fill=\\'currentColor\\' d=\\'M64 368c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zm0-160c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48zm0-160c26.5 0 48 21.5 48 48s-21.5 48-48 48-48-21.5-48-48 21.5-48 48-48z\\'/></svg> in the top-right corner. <br>2. Tap \\'Add to Home screen\\'. <br>3. Tap \\'Add\\' to finish.')" class='icon-text-link' style='background-color: black; color: white;'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M480 32C497.7 32 512 46.3 512 64V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V64C0 46.3 14.3 32 32 32H480zM36.1 416.7C74 380.2 122.9 337 149.2 300.9c26.3-36.1 27.5-70.9 2.1-91.8-25.5-20.9-88-72.2-111.4-106.6-1.5-2.1-4.1-3.4-6.9-3.4H32c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32h1.6c2.8 0 5.5-1.3 6.9-3.4l-11.4-60.6zM272.7 127.4c17.5 9.3 31.7 20.8 41.7 33.4 10.1 12.6 15.1 26.9 15.1 41.7 0 14.8-5 29.1-15.1 41.7-10 12.6-24.2 24.1-41.7 33.4 18.2 14.4 39.5 28.5 62.4 42.1s50.5 27.3 80.6 40.5l-4.5 44.8c-28.9-10.4-55.5-24.4-79.6-41.3-24.2-16.9-46.7-37.1-67.4-60.6-20.7-23.5-38.6-49.8-53.7-78.6-15.1-28.8-27.4-60.7-36.8-96l-4.7-24.7c-9.5-49.6 10.4-97.1 57.6-118.8 28.6-13 63.8-9.8 90.7 7.7 15.4 10.1 27.6 23.4 36.5 40.1 8.8 16.6 12.9 35.8 12.3 56.4-.6 20.6-5.8 40.8-15.2 60.1-9.4 19.3-22.3 37.1-38.2 53.6-15.9 16.5-35 29.5-56.7 39.1 21.8 9.6 40.9 22.6 56.7 39.1s28.8 37.1 38.2 53.6c9.4 19.3 14.6 39.5 15.2 60.1.6 20.6-3.5 39.8-12.3 56.4-8.9 16.6-21.1 29.9-36.5 40.1-26.9 17.5-62.1 20.7-90.7 7.7-47.2-21.7-67.1-69.2-57.6-118.8l4.7-24.7c9.5-49.6 1.7-98.8-21.7-142.1l-61.9-111.4c-26.3-47.3-64.4-86.4-114-116.3-15.2-9.2-30.8-16.4-46.9-21.6-1.5-.5-3-.9-4.5-1.2-1.3-.2-2.6-.4-4-.4H32c-17.7 0-32 14.3-32 32V448c0 17.7 14.3 32 32 32H480c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32H368c-1.3 0-2.6.2-4 .4-1.5.3-3 .7-4.5 1.2z'/></svg>
+                                <span>Download App for Android</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <section class='container py-12'>
+                    <div class='text-center'>
+                        <h2 style='font-size: 2.25rem;' class='text-club-maroon text-center mb-8'>A Symbol of Excellence</h2>
+                        <img src="chevrolet symbol.jpg" alt="Chevrolet Bowtie Symbol" class="mx-auto rounded-lg shadow-lg" style="max-width: 400px; width: 100%; margin: 0 auto;">
+                    </div>
+                </section>
+            `,
+            'about': `
+                <div class='container py-12'>
+                    <section class='card' style='background-color: #f3f4f6; text-align: center; margin-bottom: 3rem;'>
+                        <h2 style='font-size: 2.25rem;' class='text-chevy-gold font-lobster mb-4'>About Us</h2>
+                        <p style='font-size: 1.125rem; color: #1f2937; max-width: 48rem; margin-left: auto; margin-right: auto;'>
+                            The VCCA Queens County Region is a non-profit club dedicated to the preservation and enjoyment of vintage Chevrolet automobiles.
+                        </p>
+                    </section>
+                    <section style='margin-bottom: 3rem;'>
+                        <h3 style='font-size: 1.875rem;' class='text-club-maroon border-b-2 mb-8' style='border-color: #FFCC00; padding-bottom: 0.5rem;'>Our History</h3>
+                        <div class='grid md-grid-cols-2' style='gap: 2rem; align-items: center;'>
+                            <div>
+                                <p class='leading-relaxed' style='color: #374151;'>Founded in 2001, the VCCA Queens County Region has grown from a small group of passionate car owners into a vibrant community. Our founders, a few dedicated individuals with a shared love for classic Chevrolets, met in a local garage to discuss their restoration projects. From those humble beginnings, the club has become a central hub for enthusiasts in Queens and the wider New York metropolitan area.</p>
+                                <p class='leading-relaxed mt-4' style='color: #374151;'>Over the decades, we have hosted countless car shows, parades, and social gatherings, fostering a spirit of camaraderie and mutual respect among our members. We're proud to carry on the legacy of Chevrolet history and share our passion with the next generation.</p>
+                            </div>
+                            <div>
+                                <img src='flag-eagle.gif' alt='A patriotic flag and eagle graphic' class='rounded-lg shadow-lg w-full' style='transition: transform 0.3s;' onmouseover='this.style.transform="scale(1.05)"' onmouseout='this.style.transform="scale(1)"' onerror="this.onerror=null;this.src='https://placehold.co/800x600/e5e7eb/6b7280?text=Flag+and+Eagle';"/>
+                            </div>
+                        </div>
+                    </section>
+                    <section class='card bg-club-maroon text-white text-center mb-12'>
+                        <h3 style='font-size: 1.875rem;' class='font-lobster mb-4'>Our Mission</h3>
+                        <p style='font-size: 1.125rem; max-width: 42rem; margin-left: auto; margin-right: auto;'>
+                            To serve as a community for vintage Chevrolet owners and enthusiasts, promoting the preservation, restoration, and appreciation of these classic automobiles through education, fellowship, and shared events.
+                        </p>
+                    </section>
+                    <section class='card' style='background-color: #f3f4f6;'>
+                        <h3 style='font-size: 1.875rem;' class='text-club-maroon text-center border-b-2 mb-8' style='border-color: #FFCC00; padding-bottom: 0.5rem;'>Our Passion</h3>
+                        <div class='grid md-grid-cols-2' style='gap: 2rem; align-items: center;'>
+                             <div>
+                                <img src='1957-chevy.jpg' alt='A beautiful red and white 1957 Chevrolet' class='rounded-lg shadow-lg w-full' style='transition: transform 0.3s;' onmouseover='this.style.transform="scale(1.05)"' onmouseout='this.style.transform="scale(1)"' onerror="this.onerror=null;this.src='https://placehold.co/1200x800/e5e7eb/6b7280?text=1957+Chevy';"/>
+                            </div>
+                            <div style='text-align: left;'>
+                                <p class='leading-relaxed' style='color: #374151;'>Our club is built on a passion for timeless American engineering and design. The 1957 Chevrolet is a perfect example of the vehicles we love to restore, showcase, and drive. Its iconic tailfins, chrome accents, and powerful engine make it a symbol of a golden age in automotive history.</p>
+                                <p class='leading-relaxed mt-4' style='color: #374151;'>This classic beauty represents the spirit of our club: honoring the past while creating new memories on the open road.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `,
+            'events': `
+                <div class='container py-12'>
+                    <section class='card' style='background-color: #f3f4f6; text-align: center; margin-bottom: 3rem;'>
+                        <h2 style='font-size: 2.25rem;' class='text-chevy-gold font-lobster mb-4'>Upcoming Events</h2>
+                        <p style='font-size: 1.125rem; color: #1f2937; max-width: 48rem; margin-left: auto; margin-right: auto;'>
+                            Join us for our next club meeting or car show! Everyone is welcome.
+                        </p>
+                    </section>
+                    
+                    <section class='mb-12 card'>
+                        <h3 style='font-size: 1.5rem; color: #800000; margin-bottom: 0.5rem;'>Fun Day Monday</h3>
+                        <p style='font-size: 1.125rem; margin-top: 1rem;'><strong>Annual Antique Car Show</strong></p>
+                        <p class='mt-4' style='color: #374151; font-size: 1.125rem;'><strong>📅 Date:</strong> Monday, August 18, 2025</p>
+                        <p class='mt-4' style='color: #374151; font-size: 1.125rem;'><strong>🕖 Time:</strong> 10:00 AM-2:00 PM</p>
+                        <p class='mt-4' style='color: #374151; font-size: 1.125rem;'><strong>📍 Location:</strong> North Hempstead Beach Park (Bar Beach) <a href="https://www.google.com/maps/search/?api=1&query=North+Hempstead+Beach+Park+175+W+Shore+Rd+Port+Washington+NY+11050" target="_blank" style="margin-left: 1rem; color: #800000; text-decoration: underline;">Get Directions</a></p>
+                    </section>
+
+                    <section class='mb-12 card'>
+                        <h3 style='font-size: 1.5rem; color: #800000; margin-bottom: 0.5rem;'>VCCA Queens County Region meeting</h3>
+                        <p class='mt-4' style='color: #374151; font-size: 1.125rem;'><strong>📅 Date:</strong> Monday, August 18, 2025</p>
+                        <p class='mt-4' style='color: #374151; font-size: 1.125rem;'><strong>🕖 Time:</strong> 7:00 PM</p>
+                        <p class='mt-4' style='color: #374151; font-size: 1.125rem;'><strong>📍 Location:</strong> Omega Diner <a href="https://www.google.com/maps/search/?api=1&query=Omega+Diner+1809+Lakeville+Rd+New+Hyde+Park+NY+11040" target="_blank" style="margin-left: 1rem; color: #800000; text-decoration: underline;">Get Directions</a></p>
+                    </section>
+
+                    <div class='text-center'>
+                        <a href='https://myalbum.com/album/6dZPnYtNcqY4uZ/?invite=adadb610-ff82-42f8-bb34-a4c0ed439372' target='_blank' class='icon-text-link'>
+                            <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='currentColor' d='M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H464c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zM238.1 313.4c12.5 12.5 32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 234.7 169.4 116.1c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l114 112z'/></svg>
+                            <span>View the Current Newsletter</span>
+                        </a>
+                    </div>
+                </div>
+            `,
+            'gallery': `
+                <div class='container py-12'>
+                    <section class='card' style='background-color: #f3f4f6; text-align: center; margin-bottom: 3rem;'>
+                        <h2 style='font-size: 2.25rem;' class='text-chevy-gold font-lobster mb-4'>Featured Car Gallery</h2>
+                        <p style='font-size: 1.125rem; color: #1f2937; max-width: 48rem; margin-left: auto; margin-right: auto;'>
+                            Explore some of the stunning vintage Chevrolets from our club members.
+                        </p>
+                    </section>
+                    <section>
+                        <h3 style='font-size: 1.875rem;' class='text-club-maroon border-b-2 mb-8' style='border-color: #FFCC00; padding-bottom: 0.5rem;'>Our Collection</h3>
+                        <div class='grid sm-grid-cols-2 md-grid-cols-3 lg-grid-cols-4' style='gap: 2rem;'>
+                            ${websiteData.featuredCars.map(car => `
+                                <div class='bg-white rounded-lg shadow-lg' style='overflow: hidden; text-align: center; transition: transform 0.3s;' onmouseover='this.style.transform="scale(1.05)"' onmouseout='this.style.transform="scale(1)"'>
+                                    <button onclick='showModal("${car.image}")' style='background: none; border: none; padding: 0; cursor: pointer; width: 100%;'>
+                                        <img src='${car.image}' alt='${car.name}' loading='lazy' class='w-full h-48 object-cover' onerror="this.onerror=null;this.src='https://placehold.co/400x300/e5e7eb/6b7280?text=${encodeURIComponent(car.name)}';">
+                                    </button>
+                                    <div style='padding: 1rem;'>
+                                        <h3 style='font-size: 1.25rem;' class='text-club-maroon font-bold'>${car.name}</h3>
+                                        <p style='font-size: 0.875rem; color: #4b5563;'>Owned by: ${car.owner}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+            `,
+            'membership': `
+                <div class='container py-12'>
+                    <section class='card' style='background-color: #f3f4f6; text-align: center; margin-bottom: 3rem;'>
+                        <h2 style='font-size: 2.25rem;' class='text-chevy-gold font-lobster mb-4'>Become a Member</h2>
+                        <p style='font-size: 1.125rem; color: #1f2937; max-width: 48rem; margin-left: auto; margin-right: auto;'>
+                            Join the VCCA Queens County Region and become part of a community that celebrates the heritage of Chevrolet.
+                        </p>
+                    </section>
+                    <section class='card mb-12'>
+                        <h3 style='font-size: 1.875rem;' class='text-club-maroon border-b-2 mb-8' style='border-color: #FFCC00; padding-bottom: 0.5rem;'>Benefits of Membership</h3>
+                        <ul style='list-style: disc; list-style-position: inside; color: #374151; line-height: 2; padding-left: 1rem;'>
+                            <li>Access to exclusive club events and car shows.</li>
+                            <li>Connect with experienced restorers and technicians.</li>
+                            <li>Receive our monthly newsletter with club news and stories.</li>
+                            <li>Participation in club-only cruises and tours.</li>
+                            <li>Be part of a vibrant, welcoming community of fellow enthusiasts.</li>
+                            <li>Get access to expert advice for your restoration projects.</li>
+                        </ul>
+                    </section>
+                    <section class='card text-center'>
+                        <h4 style='font-size: 1.5rem;' class='text-club-maroon border-b-2 pb-1 mb-4' style='border-color: #FFCC00;'>How to Join</h4>
+                        <p style='color: #374151;'>To join, please visit the <a href='#contact' class='text-club-maroon font-bold underline' onclick='navigate("contact"); return false;'>Contact Us</a> page for more information.</p>
+                    </section>
+                </div>
+            `,
+            'contact': `
+                <div class='container py-12'>
+                    <section class='card' style='background-color: #f3f4f6; text-align: center; margin-bottom: 3rem;'>
+                        <h2 style='font-size: 2.25rem;' class='text-chevy-gold font-lobster mb-4'>Contact Us</h2>
+                        <p style='font-size: 1.125rem; color: #1f2937; max-width: 48rem; margin-left: auto; margin-right: auto;'>
+                            Have a question? We'd love to hear from you.
+                        </p>
+                    </section>
+                    <section class='card bg-white text-center'>
+                        <h3 style='font-size: 1.875rem;' class='text-club-maroon border-b-2 mb-8' style='border-color: #FFCC00; padding-bottom: 0.5rem;'>Club Leadership</h3>
+                        <p style='font-size: 1.125rem; font-weight: bold; color: #1f2937;'>Director-President</p>
+                        <p class='mt-4' style='color: #374151;'>Name: ${websiteData.contactInfo.director}</p>
+                        <p class='mt-4' style='color: #374151;'>Home Phone: ${websiteData.contactInfo.homePhone}</p>
+                        <p class='mt-4' style='color: #374151;'>Cell Phone: ${websiteData.contactInfo.cellPhone}</p>
+                        <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; margin-top: 2rem;'>
+                            <a href='${websiteData.contactInfo.website}' target='_blank' class='icon-text-link'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path d='M544 192h-16l-30.6-61.1C485.1 118.4 472.9 112 460 112H324.8l-43.2-64H128c-17.7 0-32 14.3-32 32v48H48C21.5 128 0 149.5 0 176v128c0 26.5 21.5 48 48 48h16c0 35.3 28.7 64 64 64s64-28.7 64-64h256c0 35.3 28.7 64 64 64s64-28.7 64-64h16c26.5 0 48-21.5 48-48v-32c0-53-43-96-96-96zM128 368a32 32 0 1 1 0-64 32 32 0 0 1 0 64zm384 0a32 32 0 1 1 0-64 32 32 0 0 1 0 64z'/></svg>
+                                Antique Chevrolet Club of Queens - Website
+                            </a>
+                            <a href='${websiteData.contactInfo.facebook}' target='_blank' class='icon-text-link'>
+                                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'><path d='M279.14 288l14.22-92.66h-88.91V127.56c0-25.35 12.42-50.06 52.24-50.06H293V6.26S262.43 0 234.36 0c-73.22 0-121.1 44.38-121.1 124.72V195.3H64v92.66h49.26V512h100.2V288z'/></svg>
+                                Follow us on Facebook
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            `,
+        };
+
+        function showMessage(title, messageHtml) {
+            const messageBox = document.getElementById('message-box');
+            document.getElementById('message-title').innerHTML = title;
+            document.getElementById('message-content').innerHTML = messageHtml;
+            messageBox.style.display = 'flex';
+
+            const dismissButton = document.getElementById('dismiss-message-button');
+            const hideMessage = () => {
+                messageBox.style.display = 'none';
+                dismissButton.removeEventListener('click', hideMessage);
+            };
+            dismissButton.addEventListener('click', hideMessage);
+        }
+
+        function showModal(imageUrl) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            modalImage.src = 'https://placehold.co/300x200/800000/FFCC00?text=Loading...';
+            
+            const img = new Image();
+            img.onload = () => {
+                modalImage.src = imageUrl;
+            };
+            img.onerror = () => {
+                 modalImage.src = 'https://placehold.co/400x300/e5e7eb/6b7280?text=Image+Not+Found';
+            };
+            img.src = imageUrl;
+
+            modal.style.display = 'flex';
+
+            const closeModalButton = document.getElementById('close-modal-button');
+            const hideModal = () => {
+                modal.style.display = 'none';
+                closeModalButton.removeEventListener('click', hideModal);
+                modal.removeEventListener('click', hideModalOnClickOutside);
+            };
+            
+            const hideModalOnClickOutside = (event) => {
+                 if(event.target === modal) {
+                     hideModal();
+                 }
+            };
+
+            closeModalButton.addEventListener('click', hideModal);
+            modal.addEventListener('click', hideModalOnClickOutside);
+        }
+
+        function navigate(pageName) {
+            const mainContent = document.getElementById('main-content');
+            if (pages[pageName]) {
+                mainContent.innerHTML = pages[pageName];
+                 window.scrollTo(0, 0);
+            } else {
+                mainContent.innerHTML = `
+                    <div class='container py-12 text-center'>
+                        <h2 style='font-size: 2.25rem;' class='text-club-maroon mb-4'>404 - Page Not Found</h2>
+                        <p style='font-size: 1.125rem; color: #374151;'>The page you are looking for does not exist.</p>
+                        <a href='#home' class='button bg-chevy-gold text-black mt-8' onclick='navigate("home"); return false;'>Go to Home</a>
+                    </div>
+                `;
+            }
+            
+            document.querySelectorAll('#nav-menu a').forEach(link => {
+                link.classList.remove('active-link');
+                if (link.getAttribute('href') === `#${pageName}`) {
+                    link.classList.add('active-link');
+                }
+            });
+            
+            window.location.hash = pageName;
+        }
+
+        function adjustMainPadding() {
+            const header = document.querySelector('#header-container');
+            const main = document.getElementById('main-content');
+            if (header && main) {
+                main.style.paddingTop = `${header.offsetHeight}px`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialHash = window.location.hash.substring(1) || 'home';
+            navigate(initialHash);
+
+            const navMenu = document.getElementById('nav-menu');
+            const menuButton = document.getElementById('menu-button');
+
+            menuButton.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const isExpanded = navMenu.classList.contains('active');
+                menuButton.setAttribute('aria-expanded', isExpanded);
+                setTimeout(adjustMainPadding, 50);
+            });
+
+            document.querySelectorAll('#nav-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 1024) {
+                        navMenu.classList.remove('active');
+                        menuButton.setAttribute('aria-expanded', 'false');
+                        setTimeout(adjustMainPadding, 50);
+                    }
+                });
+            });
+
+            adjustMainPadding();
+            window.addEventListener('resize', adjustMainPadding);
+        });
+        
+        window.addEventListener('hashchange', () => {
+            const newHash = window.location.hash.substring(1) || 'home';
+            navigate(newHash);
+        });
+    </script>
+</body>
+</html>

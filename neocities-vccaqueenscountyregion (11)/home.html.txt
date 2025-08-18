@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Redirecting...</title>
+<meta http-equiv="refresh" content="5;url=/" />
+<script>
+setTimeout(function() {
+    window.location.href = "/";
+}, 5000);
+</script>
+</head>
+<body>
+<p>If you are not redirected, <a href="/">click here</a>.</p>
+
+<!-- Newsletter image -->
+<img src="newsletter.jpg" alt="VCCA Newsletter" style="max-width:100%; height:auto;" />
+</body>
+</html>
+

@@ -1,0 +1,58 @@
+{
+  "upcomingEvents": [
+    {
+      "id": 1,
+      "name": "Annual Car Show",
+      "date": "August 24, 2025",
+      "location": "Forest Park, Queens, NY",
+      "image": "/assets/event-car-show.jpg",
+      "description": "Our biggest event of the year! Join us for a full day of vintage cars, food, and fun. Open to the public."
+    },
+    {
+      "id": 2,
+      "name": "Monthly Club Meeting",
+      "date": "September 10, 2025",
+      "location": "Virtual Meeting",
+      "image": "/assets/event-meeting.jpg",
+      "description": "A virtual meeting for all VCCA Queens members to discuss upcoming events and club news. Members only."
+    },
+    {
+      "id": 3,
+      "name": "Fall Cruise to the North Fork",
+      "date": "October 5, 2025",
+      "location": "North Fork, Long Island, NY",
+      "image": "/assets/event-cruise.jpg",
+      "description": "Enjoy the scenic autumn views on a drive to the beautiful North Fork of Long Island. All vintage cars welcome."
+    }
+  ],
+  "featuredCars": [
+    {
+      "id": 1,
+      "name": "1967 Chevrolet Impala",
+      "image": "/assets/impala-67.jpg",
+      "owner": "John Doe",
+      "votes": 0
+    },
+    {
+      "id": 2,
+      "name": "1955 Chevrolet Bel Air",
+      "image": "/assets/bel-air-55.jpg",
+      "owner": "Jane Smith",
+      "votes": 0
+    },
+    {
+      "id": 3,
+      "name": "1969 Chevrolet Camaro SS",
+      "image": "/assets/camaro-69.jpg",
+      "owner": "Alex Rodriguez",
+      "votes": 0
+    },
+    {
+      "id": 4,
+      "name": "1957 Chevrolet Corvette",
+      "image": "/assets/corvette-57.jpg",
+      "owner": "Maria Garcia",
+      "votes": 0
+    }
+  ]
+}
