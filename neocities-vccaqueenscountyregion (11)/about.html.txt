@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - Antique Chevy Club of Queens</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>Antique Chevy Club of Queens</h1>
+    <p>Preserving the history of classic Chevrolets since 1972</p>
+</header>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="membership.html">Membership</a>
+    <a href="events.html">Events</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="contact.html">Contact</a>
+</nav>
+<main>
+    <h2>About Our Club</h2>
+    <p>The Antique Chevy Club of Queens is a community of vintage Chevrolet enthusiasts. 
+       We share knowledge, resources, and experiences to help each other restore and preserve 
+       these iconic cars. Our club hosts events, car shows, and social gatherings throughout the year.</p>
+</main>
+<footer>
+    &copy; 2025 Antique Chevy Club of Queens - All Rights Reserved
+</footer>
+</body>
+</html>

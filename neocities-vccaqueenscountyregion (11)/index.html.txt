@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queens County Region, VCCA</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header id="header">
+    <img src="images/header.jpg" alt="Queens County Region Header" class="header-img">
+    <img src="images/vcca-logo.png" alt="VCCA Logo" class="logo-img">
+</header>
+
+<nav id="nav">
+    <button id="menu-toggle" aria-label="Toggle navigation">☰</button>
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Membership</a></li>
+        <li><a href="#">Calendar</a></li>
+        <li><a href="#">Car Show & Event Flyers</a></li>
+        <li><a href="#">Photo Galleries</a></li>
+        <li><a href="#">VCCA Blog</a></li>
+        <li><a href="#">Contact Us</a></li>
+    </ul>
+</nav>
+
+<section class="slider" aria-label="Image slideshow">
+    <div class="slides">
+        <img src="images/remembering-9-11.png" alt="Remembering 9/11">
+        <img src="images/vcca-national-rock-hall.jpg" alt="VCCA National Rock Hall">
+        <img src="images/facebook.png" alt="Facebook Logo">
+    </div>
+    <button class="prev" aria-label="Previous slide">&#10094;</button>
+    <button class="next" aria-label="Next slide">&#10095;</button>
+    <div class="dots"></div>
+</section>
+
+<main>
+    <section>
+        <h1>Welcome to the Queens County Region</h1>
+        <p>We work together, sharing ideas and hosting events for the community.</p>
+    </section>
+</main>
+
+<aside>
+    <h3>Join Us On!</h3>
+    <img src="images/facebook.png" alt="Facebook">
+    <img src="images/email.png" alt="Email">
+    <img src="images/rss.png" alt="RSS">
+</aside>
+
+<footer>
+    <p>© 2012 Queens County Chapter, VCCA.</p>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

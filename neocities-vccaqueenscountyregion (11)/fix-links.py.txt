@@ -1,0 +1,31 @@
+import os
+import re
+
+# Folder where you extracted your Neocities ZIP
+site_folder = r"C:\path\to\your\downloaded\site"
+
+# Domain to remove
+old_domain = "http://antiquechevyclubofqueens.org"
+old_domain_https = "https://antiquechevyclubofqueens.org"
+
+# Walk through all files in site folder
+for root, dirs, files in os.walk(site_folder):
+    for filename in files:
+        if filename.lower().endswith((".html", ".htm", ".css", ".js")):
+            file_path = os.path.join(root, filename)
+            
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+            
+            # Replace any full URLs with relative paths
+            new_content = content.replace(old_domain, "").replace(old_domain_https, "")
+            
+            # Optional: remove double slashes (//images/ → /images/)
+            new_content = re.sub(r"(?<!:)//+", "/", new_content)
+            
+            if content != new_content:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                print(f"Updated: {file_path}")
+
+print("✅ All links fixed! Now upload the updated folder to Neocities.")

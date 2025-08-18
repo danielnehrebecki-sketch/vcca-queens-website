@@ -1,0 +1,230 @@
+import os
+import time
+import re
+import json
+from urllib.parse import urlparse
+from PIL import Image
+import requests
+
+# ===== CONFIG =====
+IMAGE_LIST_SRC = "neocities-image-download-list.txt.txt"
+OUTPUT_DIR = "neocities_clone"
+CSS_DIR = os.path.join(OUTPUT_DIR, "css")
+JS_DIR = os.path.join(OUTPUT_DIR, "js")
+IMG_BASE_DIR = os.path.join(OUTPUT_DIR, "images")
+
+MAX_RETRIES = 3
+RETRY_DELAY = 1  # seconds
+
+# ===== SLIDER CONFIG =====
+SLIDER_FILES = [
+    "remembering-9-11.png",
+    "vcca-national-rock-hall.jpg",
+    "facebook.png"
+]
+
+# ===== NEW HTML, CSS, JS =====
+HTML_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queens County Region, VCCA</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header id="header">
+    <img src="images/header.jpg" alt="Queens County Region Header" class="header-img">
+    <img src="images/vcca-logo.png" alt="VCCA Logo" class="logo-img">
+</header>
+
+<nav id="nav">
+    <button id="menu-toggle" aria-label="Toggle navigation">☰</button>
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Membership</a></li>
+        <li><a href="#">Calendar</a></li>
+        <li><a href="#">Car Show & Event Flyers</a></li>
+        <li><a href="#">Photo Galleries</a></li>
+        <li><a href="#">VCCA Blog</a></li>
+        <li><a href="#">Contact Us</a></li>
+    </ul>
+</nav>
+
+<section class="slider" aria-label="Image slideshow">
+SLIDER_CONTENT
+</section>
+
+<main>
+    <section>
+        <h1>Welcome to the Queens County Region</h1>
+        <p>We work together, sharing ideas and hosting events for the community.</p>
+    </section>
+</main>
+
+<aside>
+    <h3>Join Us On!</h3>
+    <img src="images/facebook.png" alt="Facebook">
+    <img src="images/email.png" alt="Email">
+    <img src="images/rss.png" alt="RSS">
+</aside>
+
+<footer>
+    <p>© 2012 Queens County Chapter, VCCA.</p>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>
+"""
+
+CSS_TEMPLATE = """body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+#header { text-align: center; background: white; padding: 10px; }
+.header-img { max-width: 100%; height: auto; }
+.logo-img { max-height: 80px; }
+#nav { background: #3d4fff; position: relative; }
+#nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; }
+#nav li a { color: white; padding: 10px 15px; display: block; text-decoration: none; }
+#nav li a:hover { background: rgba(255,255,255,0.2); }
+#menu-toggle { display: none; background: none; color: white; font-size: 1.5em; border: none; padding: 10px; }
+.slider { position: relative; overflow: hidden; max-width: 100%; background: black; }
+.slides { display: flex; transition: transform 0.5s ease-in-out; }
+.slides img { width: 100%; flex-shrink: 0; }
+.prev, .next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; cursor: pointer; }
+.prev { left: 10px; }
+.next { right: 10px; }
+.dots { position: absolute; bottom: 10px; width: 100%; text-align: center; }
+.dots button { border: none; background: rgba(255,255,255,0.5); width: 12px; height: 12px; margin: 0 5px; border-radius: 50%; cursor: pointer; }
+.dots button.active { background: white; }
+main { flex: 1; padding: 20px; }
+aside { background: #eee; padding: 20px; text-align: center; }
+aside img { max-width: 40px; margin: 5px; }
+footer { background: #3d4fff; color: white; text-align: center; padding: 10px; }
+@media (max-width: 768px) {
+    #menu-toggle { display: block; }
+    #nav ul { flex-direction: column; display: none; }
+    #nav ul.open { display: flex; }
+}
+"""
+
+JS_TEMPLATE = """document.addEventListener("DOMContentLoaded", () => {
+    console.log("Responsive VCCA site loaded ✔️");
+    const menuToggle = document.getElementById("menu-toggle");
+    const navList = document.querySelector("#nav ul");
+    menuToggle.addEventListener("click", () => {
+        navList.classList.toggle("open");
+    });
+    const slidesContainer = document.querySelector(".slides");
+    const slides = document.querySelectorAll(".slides img");
+    const prevBtn = document.querySelector(".prev");
+    const nextBtn = document.querySelector(".next");
+    const dotsContainer = document.querySelector(".dots");
+    let index = 0;
+    function showSlide(n) {
+        index = (n + slides.length) % slides.length;
+        slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+        document.querySelectorAll(".dots button").forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+        });
+    }
+    slides.forEach((_, i) => {
+        const dot = document.createElement("button");
+        dot.addEventListener("click", () => showSlide(i));
+        dotsContainer.appendChild(dot);
+    });
+    prevBtn.addEventListener("click", () => showSlide(index - 1));
+    nextBtn.addEventListener("click", () => showSlide(index + 1));
+    setInterval(() => { showSlide(index + 1); }, 4000);
+    showSlide(0);
+});
+"""
+
+# ===== UTILS =====
+def safe_makedirs(path):
+    os.makedirs(path, exist_ok=True)
+
+def download_file(url, save_path):
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            resp = requests.get(url, timeout=10)
+            resp.raise_for_status()
+            with open(save_path, "wb") as f:
+                f.write(resp.content)
+            return True
+        except Exception as e:
+            print(f"⚠️ Attempt {attempt} failed for {url}: {e}")
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_DELAY)
+    return False
+
+def create_placeholder(save_path):
+    safe_makedirs(os.path.dirname(save_path))
+    img = Image.new("RGB", (50, 50), (200, 200, 200))
+    img.save(save_path)
+
+def local_path_from_url(url):
+    parsed = urlparse(url)
+    path = parsed.path.lstrip("/")
+    return os.path.join(IMG_BASE_DIR, path)
+
+# ===== MAIN =====
+safe_makedirs(CSS_DIR)
+safe_makedirs(JS_DIR)
+safe_makedirs(IMG_BASE_DIR)
+
+image_map = {}
+with open(IMAGE_LIST_SRC, "r", encoding="utf-8") as f:
+    lines = [line.strip() for line in f if line.strip()]
+    for i in range(0, len(lines), 2):
+        filename = lines[i]
+        url = lines[i + 1] if i + 1 < len(lines) else ""
+        image_map[filename] = url
+
+missing_files = []
+manifest = {}
+
+for filename, url in image_map.items():
+    save_path = local_path_from_url(url) if url else os.path.join(IMG_BASE_DIR, filename)
+    safe_makedirs(os.path.dirname(save_path))
+    if url:
+        print(f"⬇️ Downloading {url}")
+        if download_file(url, save_path):
+            manifest[filename] = {"url": url, "local": os.path.relpath(save_path, OUTPUT_DIR).replace("\\", "/")}
+        else:
+            print(f"📄 Placeholder for {filename}")
+            create_placeholder(save_path)
+            missing_files.append(filename)
+    else:
+        create_placeholder(save_path)
+        missing_files.append(filename)
+
+# Build slider HTML
+slider_html = '<div class="slides">\n'
+for img in SLIDER_FILES:
+    slider_html += f'    <img src="images/{img}" alt="{os.path.splitext(img)[0].replace("-", " ").title()}">\n'
+slider_html += '</div>\n<button class="prev" aria-label="Previous slide">&#10094;</button>\n'
+slider_html += '<button class="next" aria-label="Next slide">&#10095;</button>\n<div class="dots"></div>'
+
+# Write files
+with open(os.path.join(OUTPUT_DIR, "index.html"), "w", encoding="utf-8") as f:
+    f.write(HTML_TEMPLATE.replace("SLIDER_CONTENT", slider_html))
+with open(os.path.join(CSS_DIR, "style.css"), "w", encoding="utf-8") as f:
+    f.write(CSS_TEMPLATE)
+with open(os.path.join(JS_DIR, "script.js"), "w", encoding="utf-8") as f:
+    f.write(JS_TEMPLATE)
+
+with open(os.path.join(OUTPUT_DIR, "manifest.json"), "w", encoding="utf-8") as f:
+    json.dump({"images": manifest, "missing": missing_files}, f, indent=2)
+
+print("\n✅ Clone complete with responsive design and dynamic slider!")
+if missing_files:
+    print("⚠️ Missing images (placeholders created):", missing_files)

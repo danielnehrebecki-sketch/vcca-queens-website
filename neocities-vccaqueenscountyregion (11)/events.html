@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events - VCCA QUEENS COUNTY REGION</title>
+
+<!-- Google Fonts for retro style -->
+<link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #fff8f0;
+        color: #222;
+        line-height: 1.6;
+    }
+
+    /* Checkerboard stripe */
+    .checkerboard {
+        height: 20px;
+        background-image: 
+            linear-gradient(45deg, #000 25%, transparent 25%),
+            linear-gradient(-45deg, #000 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #000 75%),
+            linear-gradient(-45deg, transparent 75%, #000 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        background-color: white;
+    }
+
+    header {
+        text-align: center;
+        background: #c4002f;
+        color: white;
+        padding: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+        font-family: 'Lobster', cursive;
+        font-size: 2.5rem;
+        margin: 0;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    nav {
+        background: #00a6a6;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    }
+
+    nav a {
+        color: white;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 0 #007575;
+    }
+
+    nav a:hover {
+        background: #c4002f;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 #7a001c;
+    }
+
+    nav a.active {
+        background: #666;
+        box-shadow: 0 4px 0 #444;
+    }
+
+    main {
+        max-width: 900px;
+        margin: auto;
+        padding: 1rem;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    main h2 {
+        font-family: 'Lobster', cursive;
+        font-size: 2rem;
+        text-align: center;
+        color: #c4002f;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .event-card {
+        border: 3px solid #c4002f;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        background: #fff8f0;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .event-card strong {
+        color: #c4002f;
+        font-size: 1.2rem;
+    }
+
+    /* 3D Flyer Hover Effect */
+    main img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 1rem auto;
+        border: 3px solid #c4002f;
+        border-radius: 5px;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        transform: perspective(800px) rotateY(0deg) rotateX(0deg);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    main img:hover {
+        transform: perspective(800px) rotateY(5deg) rotateX(5deg) scale(1.05);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.4);
+    }
+
+    footer {
+        background: #c4002f;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        font-size: 0.9rem;
+        box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+    }
+
+    footer img {
+        max-height: 60px;
+        width: auto;
+        display: block;
+        margin: 0 auto 0.5rem auto;
+        transform: perspective(500px) rotateX(0deg);
+        transition: transform 0.3s ease;
+    }
+
+    footer img:hover {
+        transform: perspective(500px) rotateX(8deg);
+    }
+
+    @media (max-width: 600px) {
+        header h1 {
+            font-size: 1.8rem;
+        }
+        nav a {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- Top checkerboard stripe -->
+<div class="checkerboard"></div>
+
+<header>
+    <h1>VCCA QUEENS COUNTY REGION</h1>
+    <p>Celebrating Vintage Chevrolets</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="membership.html">Membership</a>
+    <a href="events.html" class="active">Events</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="contact.html">Contact</a>
+</nav>
+
+<main>
+    <h2>Upcoming Events</h2>
+
+    <div class="event-card">
+        <p><strong>Cruise Night</strong><br> Monday, August 11, from 6:30 PM to 9:30 PM</p>
+    </div>
+
+   
+
+    <div class="external-link">
+        📷 View the current newsletter:  
+        <a href="https://myalbum.com/album/6dZPnYtNcqY4uZ/?invite=adadb610-ff82-42f8-bb34-a4c0ed439372" target="_blank">
+            Click to open Newsletters
+        </a>
+    </div>
+<img src="Classic Car GIF by Off The Jacks.gif" 
+     alt="Classic Car GIF" 
+     style="max-width: 400px; height: auto; border: 3px solid #c4002f; border-radius: 5px; box-shadow: 0 8px 15px rgba(0,0,0,0.3);">
+
+   
+</main>
+
+<footer>
+    <img src="club-logo.jpg" alt="Vintage Chevrolet Club of America Logo">
+    <p>&copy; 2025 VCCA Queens County Region. All rights reserved.</p>
+</footer>
+
+<!-- Bottom checkerboard stripe -->
+<div class="checkerboard"></div>
+
+</body>
+</html>
+

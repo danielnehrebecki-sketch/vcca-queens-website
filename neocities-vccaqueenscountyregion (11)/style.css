@@ -1,0 +1,151 @@
+/* --- Base Styles --- */
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    background-color: #f7f7f7;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Header & Footer --- */
+header, footer {
+    background-color: #800000;
+    color: #FFCC00;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* --- Main Content --- */
+main {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* --- Responsive Images --- */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* --- Smooth Scrolling --- */
+html {
+    scroll-behavior: smooth;
+}
+
+/* --- Message Box --- */
+#message-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    opacity: 0;
+    display: none;
+}
+#message-box.show {
+    opacity: 1;
+    display: block;
+}
+
+/* --- Retro Buttons --- */
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+.retro-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #800000;
+    color: white;
+    font-weight: bold;
+    border-radius: 9999px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 2px solid #FFCC00;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+.retro-button:hover {
+    transform: scale(1.05);
+    background-color: #a00000;
+}
+.retro-button .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .contact-links {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+/* --- Events Page --- */
+.event-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #800000;
+}
+
+.external-link {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.125rem;
+    color: #4b5563;
+}
+.external-link a {
+    color: #800000;
+    text-decoration: underline;
+    font-weight: bold;
+}
+.external-link a:hover {
+    color: #FFCC00;
+}
+
+/* --- Offline Page Enhancements --- */
+.offline-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    color: #800000;
+    min-height: 80vh;
+}
+.offline-message img {
+    margin-bottom: 1.5rem;
+    max-width: 200px;
+}
+.offline-message h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+.offline-message p {
+    font-size: 1.125rem;
+}
+
+/* --- Optional Links Styling --- */
+a {
+    color: #800000;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+    color: #FFCC00;
+}
+

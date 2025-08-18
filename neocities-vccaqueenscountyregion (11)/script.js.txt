@@ -1,0 +1,43 @@
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Responsive VCCA site loaded ✔️");
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById("menu-toggle");
+    const navList = document.querySelector("#nav ul");
+    menuToggle.addEventListener("click", () => {
+        navList.classList.toggle("open");
+    });
+
+    // Slider setup
+    const slidesContainer = document.querySelector(".slides");
+    const slides = document.querySelectorAll(".slides img");
+    const prevBtn = document.querySelector(".prev");
+    const nextBtn = document.querySelector(".next");
+    const dotsContainer = document.querySelector(".dots");
+
+    let index = 0;
+
+    function showSlide(n) {
+        index = (n + slides.length) % slides.length;
+        slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+        document.querySelectorAll(".dots button").forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+        });
+    }
+
+    slides.forEach((_, i) => {
+        const dot = document.createElement("button");
+        dot.addEventListener("click", () => showSlide(i));
+        dotsContainer.appendChild(dot);
+    });
+
+    prevBtn.addEventListener("click", () => showSlide(index - 1));
+    nextBtn.addEventListener("click", () => showSlide(index + 1));
+
+    // Auto-advance every 4s
+    setInterval(() => {
+        showSlide(index + 1);
+    }, 4000);
+
+    showSlide(0);
+});

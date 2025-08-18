@@ -1,0 +1,77 @@
+import os
+import re
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+
+BASE_URL = "http://antiquechevyclubofqueens.org/"
+OUTPUT_DIR = "site"
+VISITED = set()
+
+def save_file(content, path, mode="wb"):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, mode) as f:
+        f.write(content)
+
+def fix_paths(content):
+    """Fix absolute image/CSS paths for Neocities"""
+    content = re.sub(r"https?://antiquechevyclubofqueens\.org/", "", content)
+    content = re.sub(r'src="/', 'src="', content)
+    content = re.sub(r'href="/', 'href="', content)
+    content = re.sub(r'url\("/', 'url("', content)
+    return content
+
+def download_file(url, path):
+    if os.path.exists(path):
+        return
+    try:
+        r = requests.get(url, timeout=10)
+        if r.status_code == 200:
+            save_file(r.content, path)
+    except Exception as e:
+        print(f"❌ Error downloading {url}: {e}")
+
+def scrape_page(url):
+    if url in VISITED:
+        return
+    VISITED.add(url)
+
+    try:
+        r = requests.get(url, timeout=10)
+        if r.status_code != 200:
+            return
+    except Exception as e:
+        print(f"❌ Failed to get {url}: {e}")
+        return
+
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    # Fix paths inside HTML
+    html_content = fix_paths(str(soup))
+    rel_path = urlparse(url).path
+    if rel_path.endswith("/"):
+        rel_path += "index.html"
+    if rel_path == "":
+        rel_path = "index.html"
+    save_file(html_content.encode("utf-8"), os.path.join(OUTPUT_DIR, rel_path))
+
+    # Download images, CSS, JS
+    for tag, attr in [("img", "src"), ("link", "href"), ("script", "src")]:
+        for t in soup.find_all(tag):
+            src = t.get(attr)
+            if src:
+                full_url = urljoin(url, src)
+                rel_file = urlparse(full_url).path.lstrip("/")
+                if rel_file and not rel_file.startswith("http"):
+                    download_file(full_url, os.path.join(OUTPUT_DIR, rel_file))
+
+    # Crawl internal links
+    for a in soup.find_all("a", href=True):
+        link = a["href"]
+        full_url = urljoin(url, link)
+        if urlparse(full_url).netloc == urlparse(BASE_URL).netloc:
+            scrape_page(full_url)
+
+if __name__ == "__main__":
+    scrape_page(BASE_URL)
+    print("✅ Site cloned and paths fixed! Upload the 'site' folder to Neocities.")
