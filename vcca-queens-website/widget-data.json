@@ -1,0 +1,28 @@
+const ASSETS_TO_CACHE = [
+  "/",                         // Home page
+  "/index.html",               // Main HTML
+  "/offline.html",             // Offline fallback
+  "/styles.css",               // Main stylesheet
+  "/script.js",                // Main JavaScript file
+  "/manifest.json",            // PWA manifest
+  "/widget-data.json",         // Widget data
+
+  // Icons (maskable + standard)
+  "/icons/icon-192.png",
+  "/icons/icon-256.png",
+  "/icons/icon-512.png",
+  "/icons/icon-192-maskable.png",
+  "/icons/icon-512-maskable.png",
+
+  // Screenshots for PWA store listing
+  "/screenshots/homepage.png",
+  "/screenshots/gallery.png",
+
+  // Fonts (if used)
+  "https://fonts.googleapis.com/css2?family=Lobster&family=Raleway:wght@400;700&display=swap",
+
+  // Additional HTML pages
+  "/events.html",
+  "/gallery.html",
+  "/contact.html"
+];

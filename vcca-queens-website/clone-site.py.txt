@@ -1,0 +1,98 @@
+import os
+import re
+import requests
+from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
+
+BASE_URL = "http://antiquechevyclubofqueens.org/"
+OUTPUT_DIR = "site"
+visited = set()
+
+def save_file(url, path):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    if not os.path.exists(path):
+        try:
+            print(f"Downloading: {url}")
+            r = requests.get(url, timeout=10)
+            r.raise_for_status()
+            with open(path, "wb") as f:
+                f.write(r.content)
+        except Exception as e:
+            print(f"Failed: {url} - {e}")
+
+def fix_links_and_images(soup, page_url):
+    for tag in soup.find_all(["a", "img", "link", "script"]):
+        attr = "href" if tag.name in ["a", "link"] else "src"
+        if tag.has_attr(attr):
+            url = urljoin(page_url, tag[attr])
+            parsed = urlparse(url)
+            if parsed.netloc == "" or parsed.netloc == urlparse(BASE_URL).netloc:
+                local_path = parsed.path.lstrip("/").lower()
+                if not os.path.splitext(local_path)[1] and tag.name == "img":
+                    local_path += ".jpg"
+                if not os.path.splitext(local_path)[1]:
+                    local_path = os.path.join(local_path, "index.html")
+                tag[attr] = "/" + local_path
+    return soup
+
+def fix_css_urls(css_content, css_url):
+    def repl(match):
+        orig_url = match.group(1).strip('\'"')
+        full_url = urljoin(css_url, orig_url)
+        parsed = urlparse(full_url)
+        if parsed.netloc == "" or parsed.netloc == urlparse(BASE_URL).netloc:
+            local_path = parsed.path.lstrip("/").lower()
+            save_file(full_url, os.path.join(OUTPUT_DIR, local_path))
+            return f"url('/{local_path}')"
+        return match.group(0)
+    return re.sub(r'url\(([^)]+)\)', repl, css_content)
+
+def crawl(url):
+    if url in visited:
+        return
+    visited.add(url)
+
+    try:
+        r = requests.get(url, timeout=10)
+    except:
+        print(f"❌ Could not connect: {url}")
+        return
+
+    content_type = r.headers.get("Content-Type", "")
+
+    if "text/html" in content_type:
+        soup = BeautifulSoup(r.text, "html.parser")
+        soup = fix_links_and_images(soup, url)
+
+        local_path = urlparse(url).path.lstrip("/")
+        if not local_path or local_path.endswith("/"):
+            local_path += "index.html"
+        local_path = local_path.lower()
+
+        os.makedirs(os.path.dirname(os.path.join(OUTPUT_DIR, local_path)), exist_ok=True)
+        with open(os.path.join(OUTPUT_DIR, local_path), "w", encoding="utf-8") as f:
+            f.write(str(soup))
+
+        for tag in soup.find_all(["a", "img", "link", "script"]):
+            attr = "href" if tag.name in ["a", "link"] else "src"
+            if tag.has_attr(attr):
+                full_url = urljoin(url, tag[attr])
+                if urlparse(full_url).netloc == urlparse(BASE_URL).netloc:
+                    crawl(full_url)
+
+    elif "text/css" in content_type:
+        css_content = r.text
+        css_content = fix_css_urls(css_content, url)
+
+        local_path = urlparse(url).path.lstrip("/").lower()
+        os.makedirs(os.path.dirname(os.path.join(OUTPUT_DIR, local_path)), exist_ok=True)
+        with open(os.path.join(OUTPUT_DIR, local_path), "w", encoding="utf-8") as f:
+            f.write(css_content)
+
+    elif any(content_type.startswith(t) for t in ["image", "application/javascript"]):
+        local_path = urlparse(url).path.lstrip("/").lower()
+        save_file(url, os.path.join(OUTPUT_DIR, local_path))
+
+if __name__ == "__main__":
+    crawl(BASE_URL)
+    print("✅ Done! Upload the 'site' folder to Neocities.")

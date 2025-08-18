@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline - VCCA Queens County</title>
+<link rel="stylesheet" href="/style.css"> 
+<!-- CSP for the offline page (can be more restrictive) -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'none'; 
+  style-src 'self';
+  img-src 'self';
+  connect-src 'none';
+  font-src 'none';
+">
+</head>
+<body>
+  <div class="offline-message">
+    <img src="/logo.png" alt="VCCA Logo" width="200">
+    <h1>You are offline</h1>
+    <p>Sorry, the site isn’t available right now. Please check your connection and try again.</p>
+  </div>
+</body>
+</html>

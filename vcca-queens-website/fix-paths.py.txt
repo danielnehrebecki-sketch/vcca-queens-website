@@ -1,0 +1,29 @@
+import os
+import re
+
+# Path to your downloaded site
+site_dir = "site"
+
+# Extensions to scan
+extensions = (".html", ".css")
+
+for root, _, files in os.walk(site_dir):
+    for file in files:
+        if file.endswith(extensions):
+            filepath = os.path.join(root, file)
+            with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+
+            # Replace absolute URLs with relative
+            content = re.sub(
+                r"https?://antiquechevyclubofqueens\.org/", "", content
+            )
+
+            # Replace absolute paths like /images/ with relative
+            content = re.sub(r'src="/', 'src="', content)
+            content = re.sub(r'url\("/', 'url("', content)
+
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(content)
+
+print("✅ All image & CSS paths fixed. Re-upload the site to Neocities.")

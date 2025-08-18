@@ -1,0 +1,22 @@
+{
+    "name": "VCCA Queens",
+    "short_name": "VCCA",
+    "description": "VCCA Queens County Region official website and mobile app.",
+    "start_url": "/?pwa=true",
+    "display": "standalone",
+    "background_color": "#800000",
+    "theme_color": "#FFCC00",
+    "icons": [
+        {
+            "src": "https://placehold.co/192x192/800000/FFFFFF?text=VCCA",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://placehold.co/512x512/800000/FFFFFF?text=VCCA",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
+

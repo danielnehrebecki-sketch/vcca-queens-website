@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery - VCCA Queens County Region</title>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        font-family: 'Raleway', sans-serif;
+        color: #333;
+        overflow-x: hidden;
+        min-height: 100vh;
+        background-color: #f5f0e6; /* Warm cream background */
+    }
+    header {
+        background: linear-gradient(135deg, #5e0000, #800000);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        font-family: 'Lobster', cursive;
+        font-size: 2.5rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    nav {
+        background-color: rgba(51, 51, 51, 0.95);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 0.4rem 0.8rem;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        transition: background 0.2s;
+    }
+    nav a:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+    main {
+        padding-bottom: 20px;
+    }
+    .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+        padding: 20px;
+    }
+    .gallery img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+        background-color: white;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .gallery img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    h2 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.8rem;
+        color: #5e0000;
+    }
+    .external-link {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 1.1rem;
+    }
+    .external-link a {
+        color: #5e0000;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    .external-link a:hover {
+        text-decoration: underline;
+    }
+    footer {
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #5e0000, #800000);
+        color: white;
+    }
+    footer img {
+        max-width: 150px;
+        height: auto;
+        display: block;
+        margin: 0 auto 10px;
+    }
+    @media (max-width: 600px) {
+        header {
+            font-size: 1.8rem;
+            padding: 0.8rem;
+        }
+        nav {
+            gap: 0.3rem;
+        }
+        nav a {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.6rem;
+        }
+        .gallery {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            padding: 10px;
+        }
+        h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>VCCA Queens County Region - Gallery</header>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="membership.html">Membership</a>
+    <a href="events.html">Events</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="contact.html">Contact</a>
+</nav>
+
+<main>
+    <h2>Gallery</h2>
+    <div class="gallery" id="gallery"></div>
+
+    <h2>Coming Soon Pictures</h2>
+    <div class="event-card">
+        <p><strong></strong></p>
+    </div>
+</main>
+
+<script>
+const imageFiles = [
+    // Add your image file names here
+];
+
+function loadGallery() {
+    const galleryDiv = document.getElementById('gallery');
+    imageFiles.forEach(file => {
+        const img = document.createElement('img');
+        img.src = file;
+        img.alt = file;
+        img.loading = "lazy";
+        galleryDiv.appendChild(img);
+    });
+}
+loadGallery();
+</script>
+
+<footer>
+    <img src="club-logo.jpg" alt="Vintage Chevrolet Club of America Logo">
+    <p>&copy; 2025 VCCA Queens County Region. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
+
+

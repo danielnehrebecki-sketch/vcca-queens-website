@@ -1,0 +1,62 @@
+import os
+import re
+import requests
+from urllib.parse import urlparse
+from pathlib import Path
+
+# ===== CONFIG =====
+site_folder = r"C:\path\to\your\downloaded\site"  # <-- Change this to your site folder
+old_domains = [
+    "http://antiquechevyclubofqueens.org",
+    "https://antiquechevyclubofqueens.org"
+]
+wayback_prefix = "https://web.archive.org/web/20240000000000if_"  # 2024 snapshot fallback
+
+# ===== FUNCTIONS =====
+def download_from_wayback(url, save_path):
+    """Download file from Wayback Machine if available."""
+    try:
+        archive_url = wayback_prefix + url
+        resp = requests.get(archive_url, timeout=10)
+        if resp.status_code == 200:
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(save_path, "wb") as f:
+                f.write(resp.content)
+            print(f"✅ Downloaded from Wayback: {save_path}")
+        else:
+            print(f"❌ Failed to download: {url}")
+    except Exception as e:
+        print(f"⚠ Error downloading {url}: {e}")
+
+# ===== MAIN SCRIPT =====
+for root, dirs, files in os.walk(site_folder):
+    for filename in files:
+        if filename.lower().endswith((".html", ".htm", ".css", ".js")):
+            file_path = Path(root) / filename
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+
+            new_content = content
+            urls_found = set()
+
+            for old_domain in old_domains:
+                # Find all matching URLs
+                matches = re.findall(rf"{old_domain}[^\s\"')>]+", new_content)
+                for match in matches:
+                    urls_found.add(match)
+                    local_path = urlparse(match).path.lstrip("/")
+                    if local_path:
+                        save_path = Path(site_folder) / local_path
+                        # Download the file if it's an image or CSS/JS
+                        if save_path.suffix.lower() in [".jpg", ".jpeg", ".png", ".gif", ".css", ".js"]:
+                            if not save_path.exists():
+                                download_from_wayback(match, save_path)
+                        # Replace in file content
+                        new_content = new_content.replace(match, "/" + local_path)
+
+            if content != new_content:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                print(f"🔗 Updated: {file_path}")
+
+print("\n🎉 Done! All links fixed and missing files restored from Wayback Machine.")

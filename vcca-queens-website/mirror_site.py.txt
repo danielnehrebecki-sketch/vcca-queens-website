@@ -1,0 +1,230 @@
+#!/usr/bin/env python3
+import os, re, sys, json, time, queue, argparse, logging
+from urllib.parse import urlparse, urljoin, urldefrag, unquote
+from pathlib import Path
+import requests
+from bs4 import BeautifulSoup
+
+DEFAULT_OUTPUT_DIR = "neocities_mirror"
+USER_AGENT = "StaticMirrorBot/1.0 (+https://example.org)"
+ASSET_EXTENSIONS = (
+    ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
+    ".css", ".js", ".woff", ".woff2", ".ttf", ".eot",
+    ".otf", ".pdf", ".ico", ".map"
+)
+TAG_ATTRS = {
+    "img": "src",
+    "script": "src",
+    "link": "href",
+    "a": "href",
+    "source": "src",
+    "iframe": "src",
+}
+
+def safe_makedirs(path): os.makedirs(path, exist_ok=True)
+def make_logger(verbose=False):
+    logging.basicConfig(format="%(asctime)s [%(levelname)s] %(message)s",
+                        level=logging.DEBUG if verbose else logging.INFO)
+    return logging.getLogger("mirror")
+
+logger = make_logger()
+
+def sanitize_local_path(url_path):
+    url_path = unquote(url_path)
+    if url_path.endswith("/"): url_path += "index.html"
+    if url_path.startswith("/"): url_path = url_path[1:]
+    if not os.path.splitext(url_path)[1]:
+        url_path = os.path.join(url_path, "index.html")
+    return url_path
+
+def is_asset_link(url):
+    return any(urlparse(url).path.lower().endswith(ext) for ext in ASSET_EXTENSIONS)
+def same_origin(a, b):
+    pa, pb = urlparse(a), urlparse(b)
+    return (pa.scheme, pa.netloc) == (pb.scheme, pb.netloc)
+def normalized_url(base, link):
+    if not link: return None
+    link = link.strip()
+    if link.startswith(("javascript:", "mailto:", "tel:")): return None
+    clean, _ = urldefrag(urljoin(base, link))
+    return clean
+
+class SiteMirror:
+    def __init__(self, start_url, output_dir=DEFAULT_OUTPUT_DIR, max_pages=200, max_depth=3,
+                 rate_limit=0.5):
+        self.start_url = start_url.rstrip("/")
+        self.domain = f"{urlparse(self.start_url).scheme}://{urlparse(self.start_url).netloc}"
+        self.output_dir = output_dir
+        self.max_pages = max_pages
+        self.max_depth = max_depth
+        self.rate_limit = rate_limit
+        self.session = requests.Session()
+        self.session.headers.update({"User-Agent": USER_AGENT})
+        self.to_visit, self.visited, self.assets, self.failed = queue.Queue(), set(), {}, []
+        safe_makedirs(self.output_dir)
+
+    def _save_binary(self, url, local_path):
+        local_full = os.path.join(self.output_dir, local_path)
+        safe_makedirs(os.path.dirname(local_full))
+        try:
+            r = self.session.get(url, stream=True, timeout=15)
+            r.raise_for_status()
+            with open(local_full, "wb") as f:
+                for chunk in r.iter_content(8192): f.write(chunk)
+            return True
+        except Exception as e:
+            logger.warning("Failed %s -> %s : %s", url, local_full, e)
+            self.failed.append(url)
+            return False
+
+    def _save_text(self, local_path, text):
+        local_full = os.path.join(self.output_dir, local_path)
+        safe_makedirs(os.path.dirname(local_full))
+        with open(local_full, "w", encoding="utf-8") as f: f.write(text)
+
+    def download_asset(self, url, allow_external=False):
+        if not url: return None
+        if url in self.assets: return self.assets[url]
+        if not urlparse(url).scheme:
+            url = urljoin(self.domain, url)
+        if not same_origin(self.domain, url) and not allow_external:
+            return None
+        local_rel = os.path.join("assets", sanitize_local_path(urlparse(url).netloc + urlparse(url).path)).replace("\\", "/")
+        if self._save_binary(url, local_rel) and local_rel.endswith(".css"):
+            try:
+                with open(os.path.join(self.output_dir, local_rel), "r", encoding="utf-8", errors="ignore") as f:
+                    css_text = f.read()
+                rewritten_css = self._rewrite_css_urls(css_text, url, allow_external=True)
+                with open(os.path.join(self.output_dir, local_rel), "w", encoding="utf-8") as f:
+                    f.write(rewritten_css)
+            except Exception as e:
+                logger.warning("CSS parse fail %s: %s", url, e)
+        self.assets[url] = local_rel
+        time.sleep(self.rate_limit)
+        return local_rel
+
+    def _rewrite_css_urls(self, css_text, page_url, allow_external=False):
+        def repl(m):
+            raw = m.group(1).strip(' \'"')
+            abs_u = normalized_url(page_url, raw)
+            if not abs_u: return f"url({raw})"
+            if not same_origin(self.domain, abs_u) and not allow_external:
+                return f"url({raw})"
+            local = self.download_asset(abs_u, allow_external=True)
+            return f"url({local if local else raw})"
+        return re.sub(r"url\(([^)]+)\)", repl, css_text, flags=re.IGNORECASE)
+
+    def rewrite_and_save_html(self, url, html, depth):
+        soup = BeautifulSoup(html, "html.parser")
+
+        # Always download <img> even if external
+        for img in soup.find_all("img"):
+            src = img.get("src")
+            abs_src = normalized_url(url, src)
+            if abs_src:
+                local = self.download_asset(abs_src, allow_external=True)
+                if local: img["src"] = local
+
+        new_links = set()
+        for tag, attr in TAG_ATTRS.items():
+            for el in soup.find_all(tag):
+                val = el.get(attr)
+                if not val: continue
+                abs_link = normalized_url(url, val)
+                if not abs_link: continue
+
+                # External CSS download
+                if tag == "link" and el.get("rel") and "stylesheet" in el.get("rel"):
+                    css_local = self.download_asset(abs_link, allow_external=True)
+                    if css_local: el[attr] = css_local
+                    continue
+
+                # Assets (images, fonts) always external allowed
+                if is_asset_link(abs_link):
+                    local = self.download_asset(abs_link, allow_external=True)
+                    if local: el[attr] = local
+                    continue
+
+                # Internal page link
+                if same_origin(self.domain, abs_link):
+                    local_page_rel = sanitize_local_path(urlparse(abs_link).path or "/")
+                    curr_local_page = sanitize_local_path(urlparse(url).path or "/")
+                    curr_dir = os.path.dirname(curr_local_page)
+                    rel_path = os.path.relpath(local_page_rel, start=curr_dir) or local_page_rel
+                    el[attr] = rel_path.replace("\\", "/")
+                    new_links.add(abs_link)
+
+        # Follow "Older Posts" / "Next"
+        for a in soup.find_all("a"):
+            txt = a.get_text(strip=True).lower()
+            if any(k in txt for k in ["older posts", "next", "previous"]):
+                href = a.get("href")
+                abs_link = normalized_url(url, href)
+                if abs_link and same_origin(self.domain, abs_link):
+                    new_links.add(abs_link)
+
+        local_page_rel = sanitize_local_path(urlparse(url).path or "/")
+        self._save_text(local_page_rel, str(soup))
+        return new_links
+
+    def crawl(self):
+        self.to_visit.put((self.start_url, 0))
+        self.visited.add(self.start_url)
+
+        # Menu prefetch
+        try:
+            logger.info("Prefetching menu links...")
+            soup = BeautifulSoup(self.session.get(self.start_url, timeout=15).text, "html.parser")
+            for a in soup.select("nav a, .menu a, #menu a, ul.menu a"):
+                abs_link = normalized_url(self.start_url, a.get("href"))
+                if abs_link and same_origin(self.domain, abs_link) and abs_link not in self.visited:
+                    logger.info(f"  Menu: {abs_link}")
+                    self.visited.add(abs_link)
+                    self.to_visit.put((abs_link, 1))
+        except Exception as e:
+            logger.warning(f"Menu prefetch fail: {e}")
+
+        pages_processed = 0
+        while not self.to_visit.empty() and pages_processed < self.max_pages:
+            url, depth = self.to_visit.get()
+            logger.info(f"Crawling: {url} (depth {depth})")
+            try:
+                r = self.session.get(url, timeout=15)
+                r.raise_for_status()
+                if "text/html" not in r.headers.get("Content-Type", ""): continue
+                new_links = self.rewrite_and_save_html(url, r.text, depth)
+                pages_processed += 1
+                if depth < self.max_depth:
+                    for link in new_links:
+                        if link not in self.visited:
+                            self.visited.add(link)
+                            self.to_visit.put((link, depth + 1))
+                time.sleep(self.rate_limit)
+            except Exception as e:
+                logger.warning(f"Failed {url}: {e}")
+                self.failed.append(url)
+
+        with open(os.path.join(self.output_dir, "manifest.json"), "w", encoding="utf-8") as mf:
+            json.dump({
+                "start_url": self.start_url,
+                "pages_visited": list(self.visited),
+                "assets": self.assets,
+                "failed": list(set(self.failed))
+            }, mf, indent=2)
+        logger.info(f"Crawl complete: {pages_processed} pages")
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("start_url", help="Start URL")
+    ap.add_argument("--output", "-o", default=DEFAULT_OUTPUT_DIR)
+    ap.add_argument("--max-pages", "-m", type=int, default=200)
+    ap.add_argument("--depth", "-d", type=int, default=3)
+    ap.add_argument("--rate-limit", type=float, default=0.5)
+    ap.add_argument("--verbose", "-v", action="store_true")
+    args = ap.parse_args()
+    global logger
+    logger = make_logger(args.verbose)
+    SiteMirror(args.start_url, args.output, args.max_pages, args.depth, args.rate_limit).crawl()
+
+if __name__ == "__main__":
+    main()
